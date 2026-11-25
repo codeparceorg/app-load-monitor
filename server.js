@@ -11,8 +11,8 @@ const { Worker } = require("node:worker_threads");
 
 const PORT = Number(process.env.PORT || 3000);
 
-const TARGET_CPU = Number(process.env.TARGET_CPU || 10);
-const TARGET_MEMORY = Number(process.env.TARGET_MEMORY || 10);
+const TARGET_CPU = Number(process.env.TARGET_CPU || 67);
+const TARGET_MEMORY = Number(process.env.TARGET_MEMORY || 75);
 
 const PUBLIC_DIR = path.join(__dirname, "public");
 
