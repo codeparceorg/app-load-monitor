@@ -1,9 +1,13 @@
 {
   "name": "docker-load-monitor",
-  "version": "1.0.0",
-  "description": "Docker CPU and memory load simulator",
-  "main": "server.js",
+  "version": "2.0.0",
+  "description": "Docker CPU and memory load simulator with Express",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
   }
 }

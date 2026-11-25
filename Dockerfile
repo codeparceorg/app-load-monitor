@@ -1,15 +1,17 @@
-
 FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package.json ./
-COPY server.js worker.js ./
+COPY package.json package-lock.json* ./
 
+RUN npm install --production
+
+COPY worker.js ./
+COPY src ./src
 COPY public ./public
 
 ENV PORT=80
 
 EXPOSE 80
 
-CMD ["node", "server.js"]
+CMD ["node", "src/app.js"]
