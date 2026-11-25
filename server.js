@@ -11,8 +11,8 @@ const { Worker } = require("node:worker_threads");
 
 const PORT = Number(process.env.PORT || 3000);
 
-const TARGET_CPU = Number(process.env.TARGET_CPU || 67);
-const TARGET_MEMORY = Number(process.env.TARGET_MEMORY || 75);
+const TARGET_CPU = Number(process.env.TARGET_CPU || 61);
+const TARGET_MEMORY = Number(process.env.TARGET_MEMORY || 61);
 
 const PUBLIC_DIR = path.join(__dirname, "public");
 
@@ -199,28 +199,22 @@ const MEMORY_TARGET_BYTES =
 
 const MEMORY_CHUNK = 8 * 1024 * 1024;
 
-function allocateMemory() {
-    const allocated = memoryBuffers.reduce(
-        (total, buffer) => total + buffer.length,
-        0
-    );
+const MAX_ALLOC_PERCENT = 0.5; // No reservar más del 50 % de la memoria del task
 
-    if (allocated >= MEMORY_TARGET_BYTES) {
-        return;
+function allocateMemory() {
+    const allocated = memoryBuffers.reduce((total, buffer) => total + buffer.length, 0);
+    // Límite máximo en bytes basado en el porcentaje
+    const maxAllocBytes = MAX_MEMORY * MAX_ALLOC_PERCENT;
+    if (allocated >= maxAllocBytes) {
+        return; // ya hemos alcanzado el límite deseado
     }
 
-    const remaining = MEMORY_TARGET_BYTES - allocated;
-
-    const chunkSize = Math.min(
-        MEMORY_CHUNK,
-        remaining
-    );
-
+    const remaining = maxAllocBytes - allocated;
+    const chunkSize = Math.min(MEMORY_CHUNK, remaining);
     // Touch memory pages to make allocation resident.
-    memoryBuffers.push(
-        Buffer.alloc(chunkSize, 1)
-    );
+    memoryBuffers.push(Buffer.alloc(chunkSize, 1));
 }
+
 
 // ==========================================
 // METRICS
