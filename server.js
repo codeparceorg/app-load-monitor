@@ -285,7 +285,35 @@ const contentTypes = {
     ".png": "image/png"
 };
 
-function serveStatic(req, res) {
+const METADATA_URI = process.env.ECS_CONTAINER_METADATA_URI_V4 || process.env.ECS_CONTAINER_METADATA_URI;
+
+function serveMetadata(req, res) {
+  if (!METADATA_URI) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Metadata endpoint not available" }));
+    return true;
+  }
+  const taskUrl = new URL('/task', METADATA_URI);
+  http.get(taskUrl, metaRes => {
+    let data = '';
+    metaRes.on('data', chunk => data += chunk);
+    metaRes.on('end', () => {
+      try {
+        const meta = JSON.parse(data);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(meta));
+      } catch (e) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Failed to parse metadata" }));
+      }
+    });
+  }).on('error', err => {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: err.message }));
+  });
+  return true;
+}
+
     const pathname = new URL(
         req.url,
         "http://localhost"
@@ -315,7 +343,6 @@ function serveStatic(req, res) {
     });
 
     return true;
-}
 
 // ==========================================
 // HTTP SERVER
@@ -345,10 +372,21 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // Metadata endpoint
+    if (pathname === "/metadata") {
+        if (serveMetadata(req, res)) {
+            return;
+        }
+    }
+
     // Static frontend
     if (serveStatic(req, res)) {
         return;
     }
+
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("Not found");
+    return;
 
     res.writeHead(404, {
         "Content-Type": "text/plain"
