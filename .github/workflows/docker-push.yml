@@ -27,4 +27,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/cpu-memory-monitor:latest
+          tags: ${{ secrets.DOCKER_ACCOUNT_NAME }}/app-load-monitor:latest
