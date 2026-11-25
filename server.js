@@ -9,7 +9,7 @@ const { Worker } = require("node:worker_threads");
 // CONFIGURATION
 // ==========================================
 
-const PORT = Number(process.env.PORT || 3000);
+const PORT = Number(process.env.PORT || 80);
 
 const TARGET_CPU = Number(process.env.TARGET_CPU || 61);
 const TARGET_MEMORY = Number(process.env.TARGET_MEMORY || 61);
@@ -314,6 +314,7 @@ function serveMetadata(req, res) {
   return true;
 }
 
+function serveStatic(req, res) {
     const pathname = new URL(
         req.url,
         "http://localhost"
@@ -343,6 +344,7 @@ function serveMetadata(req, res) {
     });
 
     return true;
+}
 
 // ==========================================
 // HTTP SERVER

@@ -6,7 +6,7 @@ Frontend estático para simular una carga creciente de CPU y memoria desde el na
 
 ```bash
 docker build -t load-monitor .
-docker run --rm  --name load-monitor  --cpus=0.25  --memory=512m  -e TARGET_CPU=50  -e TARGET_MEMORY=50  -p 8080:3000  load-monitor
+docker run --rm  --name load-monitor  --cpus=0.25  --memory=512m  -e TARGET_CPU=50  -e TARGET_MEMORY=50  -p 8080:80  load-monitor
 ```
 
 Abrir:
