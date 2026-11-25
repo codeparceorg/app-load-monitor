@@ -1,0 +1,9 @@
+{
+  "name": "docker-load-monitor",
+  "version": "1.0.0",
+  "description": "Docker CPU and memory load simulator",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
